@@ -87,6 +87,7 @@ const webpackConfig = {
           },
           'css-loader',
           'sass-loader',
+          'postcss-loader',
         ],
       },
     ],

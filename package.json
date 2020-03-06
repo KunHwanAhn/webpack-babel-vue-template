@@ -1,0 +1,11 @@
+{
+  "name": "webpack-babel-vue-template",
+  "version": "0.0.1",
+  "description": "Webpack + Babel + Vue.js Template without VueCli",
+  "main": "src/main.js",
+  "repository": "https://github.com/KunHwanAhn/webpack-babel-vue-template",
+  "author": "Conan Kunhwan Ahn <kunhwon@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {}
+}

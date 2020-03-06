@@ -9,7 +9,8 @@ module.exports = {
     'airbnb-base',
   ],
   parserOptions: {
-    ecmaVersion: 2018,
+    parser: 'babel-eslint',
+    ecmaVersion: 2020,
     sourceType: 'module',
   },
   plugins: [

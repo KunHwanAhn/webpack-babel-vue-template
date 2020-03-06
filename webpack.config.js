@@ -14,6 +14,20 @@ module.exports = {
       '@': resolve(__dirname, 'src'),
     },
   },
+  module: {
+    rules: [
+      {
+        test: /\.m?jsx?$/,
+        include: [
+          resolve(__dirname, 'src'),
+        ],
+        exclude: /node_moduels/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+    ],
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({

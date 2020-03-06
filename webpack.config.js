@@ -144,6 +144,13 @@ const webpackConfig = {
         ],
       },
       {
+        test: /\.(png|jpe?g|gif|svg)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]?[hash]',
+        },
+      },
+      {
         enforce: 'pre',
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',

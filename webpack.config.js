@@ -10,6 +10,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const { resolve } = require('path');
 
 const isProduction = process.env.NODE_ENV === 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 const webpackConfig = {
   mode: 'development',
@@ -114,6 +115,25 @@ const webpackConfig = {
     ],
   },
 };
+
+if (isDevelopment) {
+  webpackConfig.devServer = {
+    compress: true,
+    host: '0.0.0.0',
+    port: 8080,
+    hot: true,
+    liveReload: false,
+    overlay: {
+      warnings: true,
+      errors: true,
+    },
+  };
+
+  webpackConfig.plugins = [
+    ...webpackConfig.plugins,
+    new webpack.HotModuleReplacementPlugin({}),
+  ];
+}
 
 if (isProduction) {
   webpackConfig.mode = 'production';

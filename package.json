@@ -8,8 +8,9 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "NODE_ENV=development webpack",
-    "build": "NODE_ENV=production webpack"
+    "serve": "NODE_ENV=development webpack-dev-server",
+    "build": "NODE_ENV=production webpack",
+    "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
     "core-js": "^3.6.4",
@@ -39,6 +40,7 @@
     "vue-loader": "^15.9.0",
     "vue-template-compiler": "^2.6.11",
     "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   }
 }

@@ -2,8 +2,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { resolve } = require('path');
 
-module.exports = {
+const webpackConfig = {
   mode: 'development',
+  devtool: 'source-map',
   entry: './src/main.js',
   output: {
     path: resolve(__dirname, 'dist'),
@@ -44,3 +45,6 @@ module.exports = {
     }),
   ],
 };
+
+
+module.exports = webpackConfig;

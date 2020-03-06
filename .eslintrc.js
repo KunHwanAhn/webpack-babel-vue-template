@@ -5,7 +5,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    'plugin:vue/essential',
+    'plugin:vue/recommended',
     'airbnb-base',
   ],
   parserOptions: {
@@ -17,5 +17,7 @@ module.exports = {
     'vue',
   ],
   rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   },
 };

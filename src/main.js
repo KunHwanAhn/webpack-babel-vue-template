@@ -1,8 +1,9 @@
+import Vue from 'vue';
 // eslint-disable-next-line import/no-unresolved
 import '@/styles/index.scss';
 
-const obj = {
-  say: true,
-};
+import App from './App.vue';
 
-console.log(obj?.say ? 'hello world' : 'can\'t say');
+new Vue({
+  render: (h) => h(App),
+}).$mount('#app');

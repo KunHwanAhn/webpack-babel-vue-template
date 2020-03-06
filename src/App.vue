@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div :class="$style.hello">
     Hello Vue!
   </div>
 </template>
@@ -8,7 +8,7 @@
 export default {};
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .hello {
   font-size: 24px;
 }

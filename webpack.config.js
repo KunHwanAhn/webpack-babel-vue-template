@@ -18,7 +18,8 @@ const webpackConfig = {
   entry: './src/main.js',
   output: {
     path: resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: 'js/[name].js',
+    chunkFilename: 'js/[name].js',
   },
   resolve: {
     alias: {
@@ -91,19 +92,55 @@ const webpackConfig = {
         include: [
           resolve(__dirname, 'src'),
         ],
-        exclude: /node_moduels/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
         },
       },
       {
         test: /\.scss$/,
-        exclude: /node_moduels/,
-        use: [
-          isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
-          'css-loader',
-          'postcss-loader',
-          'sass-loader',
+        exclude: /node_modules/,
+        oneOf: [
+          {
+            resourceQuery: /module/,
+            use: [
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: {
+                    localIdentName: '[name]_[local]_[hash:base64:8]',
+                  },
+                },
+              },
+              'postcss-loader',
+              'sass-loader',
+            ],
+          },
+          {
+            test: /\.module\.\w+$/,
+            use: [
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: {
+                    localIdentName: '[name]_[local]_[hash:base64:8]',
+                  },
+                },
+              },
+              'postcss-loader',
+              'sass-loader',
+            ],
+          },
+          {
+            use: [
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              'css-loader',
+              'postcss-loader',
+              'sass-loader',
+            ],
+          },
         ],
       },
       {
@@ -142,6 +179,8 @@ if (isProduction) {
   webpackConfig.plugins = [
     ...webpackConfig.plugins,
     new MiniCssExtractPlugin({
+      filename: 'styles/[name].css',
+      chunkFilename: 'styles/[id].css',
       ignoreOrder: true,
     }),
   ];

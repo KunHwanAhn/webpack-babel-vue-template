@@ -103,7 +103,6 @@ const webpackConfig = {
       },
       {
         test: /\.s(c|a)ss$/,
-        // exclude: /node_modules/,
         oneOf: [
           {
             resourceQuery: /module/,

@@ -1,9 +1,15 @@
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
 const { resolve } = require('path');
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 const webpackConfig = {
   mode: 'development',
@@ -16,6 +22,7 @@ const webpackConfig = {
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
+      vue$: 'vue/dist/vue.esm.js',
     },
   },
   optimization: {
@@ -47,6 +54,12 @@ const webpackConfig = {
     ],
   },
   plugins: [
+    new VueLoaderPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: isProduction ? '"production"' : '"development"',
+      },
+    }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
@@ -62,12 +75,16 @@ const webpackConfig = {
         ],
       },
     }),
-    new MiniCssExtractPlugin({
-      ignoreOrder: true,
-    }),
   ],
   module: {
     rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          extractCSS: isProduction,
+        },
+      },
       {
         test: /\.m?jsx?$/,
         include: [
@@ -82,17 +99,32 @@ const webpackConfig = {
         test: /\.scss$/,
         exclude: /node_moduels/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-          },
+          isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
           'css-loader',
-          'sass-loader',
           'postcss-loader',
+          'sass-loader',
         ],
+      },
+      {
+        enforce: 'pre',
+        test: /\.(js|vue)$/,
+        loader: 'eslint-loader',
+        exclude: /node_modules/,
       },
     ],
   },
 };
 
+if (isProduction) {
+  webpackConfig.mode = 'production';
+  webpackConfig.devtool = '';
+
+  webpackConfig.plugins = [
+    ...webpackConfig.plugins,
+    new MiniCssExtractPlugin({
+      ignoreOrder: true,
+    }),
+  ];
+}
 
 module.exports = webpackConfig;

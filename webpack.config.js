@@ -1,11 +1,14 @@
+/* eslint-disable global-require */
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
 const { resolve } = require('path');
 
@@ -57,6 +60,7 @@ const webpackConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
+    new VuetifyLoaderPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: isProduction ? '"production"' : '"development"',
@@ -98,8 +102,7 @@ const webpackConfig = {
         },
       },
       {
-        test: /\.scss$/,
-        exclude: /node_modules/,
+        test: /\.s(c|a)ss$/,
         oneOf: [
           {
             resourceQuery: /module/,
@@ -138,7 +141,15 @@ const webpackConfig = {
               isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
               'css-loader',
               'postcss-loader',
-              'sass-loader',
+              {
+                loader: 'sass-loader',
+                options: {
+                  implementation: require('sass'),
+                  sassOptions: {
+                    fiber: require('fibers'),
+                  },
+                },
+              },
             ],
           },
         ],
@@ -189,6 +200,10 @@ if (isProduction) {
       filename: 'styles/[name].css',
       chunkFilename: 'styles/[id].css',
       ignoreOrder: true,
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
     }),
   ];
 }

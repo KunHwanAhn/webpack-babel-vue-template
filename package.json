@@ -1,0 +1,16 @@
+{
+  "name": "webpack-babel-vue-template",
+  "version": "0.0.1",
+  "description": "Webpack + Babel + Vue.js Template without VueCli",
+  "main": "src/main.js",
+  "repository": "https://github.com/KunHwanAhn/webpack-babel-vue-template",
+  "author": "Conan Kunhwan Ahn <kunhwon@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-vue": "^6.2.1"
+  }
+}

@@ -68,7 +68,6 @@ const webpackConfig = {
         NODE_ENV: isProduction ? '"production"' : '"development"',
       },
     }),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
@@ -198,6 +197,7 @@ if (isProduction) {
 
   webpackConfig.plugins = [
     ...webpackConfig.plugins,
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',
       chunkFilename: 'styles/[id].css',

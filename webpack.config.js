@@ -6,6 +6,7 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
@@ -61,6 +62,7 @@ const webpackConfig = {
   plugins: [
     new VueLoaderPlugin(),
     new VuetifyLoaderPlugin(),
+    new CaseSensitivePathsPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: isProduction ? '"production"' : '"development"',

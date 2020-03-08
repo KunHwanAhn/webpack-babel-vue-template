@@ -32,6 +32,16 @@ const webpackConfig = {
     },
   },
   optimization: {
+    splitChunks: {
+      // chunks: 'all',
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
     minimizer: [
       new TerserJSPlugin({
         terserOptions: {
@@ -200,7 +210,7 @@ if (isProduction) {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',
-      chunkFilename: 'styles/[id].css',
+      chunkFilename: 'styles/[name].css',
       ignoreOrder: true,
     }),
     new BundleAnalyzerPlugin({

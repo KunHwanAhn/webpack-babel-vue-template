@@ -1,11 +1,6 @@
 <template>
   <div :calss="$style.contact">
-    <div>
-      This is contact page
-    </div>
-    <div>
-      {{ $style }}
-    </div>
+    This is contact page
   </div>
 </template>
 

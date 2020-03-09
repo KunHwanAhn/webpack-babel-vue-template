@@ -6,6 +6,7 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
@@ -31,6 +32,15 @@ const webpackConfig = {
     },
   },
   optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
     minimizer: [
       new TerserJSPlugin({
         terserOptions: {
@@ -61,12 +71,12 @@ const webpackConfig = {
   plugins: [
     new VueLoaderPlugin(),
     new VuetifyLoaderPlugin(),
+    new CaseSensitivePathsPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: isProduction ? '"production"' : '"development"',
       },
     }),
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
@@ -178,6 +188,7 @@ if (isDevelopment) {
     port: 8080,
     hot: true,
     liveReload: false,
+    historyApiFallback: true,
     overlay: {
       warnings: true,
       errors: true,
@@ -196,9 +207,10 @@ if (isProduction) {
 
   webpackConfig.plugins = [
     ...webpackConfig.plugins,
+    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',
-      chunkFilename: 'styles/[id].css',
+      chunkFilename: 'styles/[name].css',
       ignoreOrder: true,
     }),
     new BundleAnalyzerPlugin({

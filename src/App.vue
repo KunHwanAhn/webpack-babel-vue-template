@@ -9,17 +9,23 @@
         nav
         dense
       >
-        <VListItem link>
+        <VListItem
+          link
+          to="/"
+        >
           <VListItemAction>
-            <v-icon>mdi-home</v-icon>
+            <VIcon>mdi-home</VIcon>
           </VListItemAction>
           <VListItemContent>
             <VListItemTitle>Home</VListItemTitle>
           </VListItemContent>
         </VListItem>
-        <VListItem link>
+        <VListItem
+          link
+          to="/contact"
+        >
           <VListItemAction>
-            <v-icon>mdi-contact-mail</v-icon>
+            <VIcon>mdi-contact-mail</VIcon>
           </VListItemAction>
           <VListItemContent>
             <VListItemTitle>Contact</VListItemTitle>

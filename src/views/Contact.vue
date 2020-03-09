@@ -1,5 +1,5 @@
 <template>
-  <div :calss="$style.contact">
+  <div :class="$style.contact">
     This is contact page
   </div>
 </template>

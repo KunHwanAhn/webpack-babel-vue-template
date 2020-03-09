@@ -189,6 +189,7 @@ if (isDevelopment) {
     port: 8080,
     hot: true,
     liveReload: false,
+    historyApiFallback: true,
     overlay: {
       warnings: true,
       errors: true,

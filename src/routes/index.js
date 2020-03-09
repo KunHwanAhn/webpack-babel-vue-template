@@ -11,6 +11,10 @@ const routes = [
     component: HelloWorld,
   },
   {
+    path: '/contact',
+    component: () => import(/* webpackChunkName: "contact" */ '@/views/Contact.vue'),
+  },
+  {
     path: '*',
     redirect: '/',
   },

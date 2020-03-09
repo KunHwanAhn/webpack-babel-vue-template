@@ -33,7 +33,7 @@ const webpackConfig = {
   },
   optimization: {
     splitChunks: {
-      // chunks: 'all',
+      chunks: 'all',
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,

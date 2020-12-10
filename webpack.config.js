@@ -184,7 +184,10 @@ if (isDevelopment) {
     liveReload: false,
     historyApiFallback: true,
     static: [
-      resolve(__dirname, './assets'),
+      {
+        directory: resolve(__dirname, './assets'),
+        publicPath: '/assets/',
+      },
     ],
     overlay: {
       warnings: true,

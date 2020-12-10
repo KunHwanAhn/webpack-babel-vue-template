@@ -6,9 +6,6 @@
       </RouterLink>
     </div>
     <div>Hello Vue!</div>
-    <div class="img-container">
-      <img src="/assets/img/aws.svg">
-    </div>
   </div>
 </template>
 

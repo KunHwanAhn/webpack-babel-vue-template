@@ -1,15 +1,16 @@
 /* eslint-disable global-require */
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
 const { resolve } = require('path');
 
@@ -18,8 +19,8 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 const webpackConfig = {
   mode: 'development',
-  devtool: 'source-map',
-  entry: './src/main.js',
+  target: ['web', 'es5'],
+  entry: resolve(__dirname, './src/main.js'),
   output: {
     path: resolve(__dirname, 'dist'),
     filename: 'js/[name].js',
@@ -34,7 +35,7 @@ const webpackConfig = {
   optimization: {
     splitChunks: {
       cacheGroups: {
-        vendors: {
+        defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
           chunks: 'all',
@@ -42,6 +43,7 @@ const webpackConfig = {
       },
     },
     minimizer: [
+      new CssMinimizerPlugin(),
       new TerserJSPlugin({
         terserOptions: {
           compress: {
@@ -63,33 +65,21 @@ const webpackConfig = {
             safari10: true,
           },
         },
-        sourceMap: true,
         extractComments: false,
       }),
     ],
   },
   plugins: [
     new VueLoaderPlugin(),
-    new VuetifyLoaderPlugin(),
     new CaseSensitivePathsPlugin(),
+    new ESLintPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: isProduction ? '"production"' : '"development"',
       },
     }),
     new HtmlWebpackPlugin({
-      template: './public/index.html',
-    }),
-    new OptimizeCSSAssetsPlugin({
-      cssProcessorPluginOptions: {
-        preset: [
-          'default',
-          {
-            mergeLonghand: false,
-            cssDeclarationSorter: false,
-          },
-        ],
-      },
+      template: resolve(__dirname, './public/index.html'),
     }),
   ],
   module: {
@@ -109,6 +99,15 @@ const webpackConfig = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', {
+                useBuiltIns: 'usage',
+                corejs: 3,
+                shippedProposals: true,
+              }],
+            ],
+          },
         },
       },
       {
@@ -117,12 +116,12 @@ const webpackConfig = {
           {
             resourceQuery: /module/,
             use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
               {
                 loader: 'css-loader',
                 options: {
                   modules: {
-                    localIdentName: '[name]_[local]_[hash:base64:8]',
+                    localIdentName: '[name]_[local]_[contenthash:base64:8]',
                   },
                 },
               },
@@ -133,12 +132,12 @@ const webpackConfig = {
           {
             test: /\.module\.\w+$/,
             use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
               {
                 loader: 'css-loader',
                 options: {
                   modules: {
-                    localIdentName: '[name]_[local]_[hash:base64:8]',
+                    localIdentName: '[name]_[local]_[contenthash:base64:8]',
                   },
                 },
               },
@@ -148,7 +147,7 @@ const webpackConfig = {
           },
           {
             use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
               'css-loader',
               'postcss-loader',
               {
@@ -168,20 +167,15 @@ const webpackConfig = {
         test: /\.(png|jpe?g|gif|svg)$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[ext]?[hash]',
+          name: '[name].[ext]?[contenthash]',
         },
-      },
-      {
-        enforce: 'pre',
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        exclude: /node_modules/,
       },
     ],
   },
 };
 
 if (isDevelopment) {
+  webpackConfig.devtool = 'source-map';
   webpackConfig.devServer = {
     compress: true,
     host: '0.0.0.0',
@@ -189,6 +183,12 @@ if (isDevelopment) {
     hot: true,
     liveReload: false,
     historyApiFallback: true,
+    static: [
+      {
+        directory: resolve(__dirname, './assets'),
+        publicPath: '/assets/',
+      },
+    ],
     overlay: {
       warnings: true,
       errors: true,
@@ -203,10 +203,12 @@ if (isDevelopment) {
 
 if (isProduction) {
   webpackConfig.mode = 'production';
-  webpackConfig.devtool = '';
 
   webpackConfig.plugins = [
     ...webpackConfig.plugins,
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'assets', to: 'assets' }],
+    }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: 'styles/[name].css',

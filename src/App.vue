@@ -1,15 +1,15 @@
 <template>
-  <div :class="$style.hello">
-    Hello Vue!
+  <div>
+    <RouterView />
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      drawer: false,
+    };
+  },
+};
 </script>
-
-<style lang="scss" module>
-.hello {
-  font-size: 24px;
-}
-</style>

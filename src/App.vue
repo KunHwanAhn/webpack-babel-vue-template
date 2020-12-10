@@ -25,7 +25,7 @@
           to="/contact"
         >
           <VListItemAction>
-            <VIcon>mdi-contact-mail</VIcon>
+            <VIcon>mdi-card-account-mail</VIcon>
           </VListItemAction>
           <VListItemContent>
             <VListItemTitle>Contact</VListItemTitle>
@@ -43,11 +43,11 @@
       <VToolbarTitle>Application</VToolbarTitle>
     </VAppBar>
 
-    <VContent>
+    <VMain>
       <VContainer fluid>
         <RouterView />
       </VContainer>
-    </VContent>
+    </VMain>
     <VFooter
       color="indigo"
       app

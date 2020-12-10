@@ -116,7 +116,7 @@ const webpackConfig = {
           {
             resourceQuery: /module/,
             use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
               {
                 loader: 'css-loader',
                 options: {
@@ -132,7 +132,7 @@ const webpackConfig = {
           {
             test: /\.module\.\w+$/,
             use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
               {
                 loader: 'css-loader',
                 options: {
@@ -147,7 +147,7 @@ const webpackConfig = {
           },
           {
             use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'vue-style-loader',
+              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
               'css-loader',
               'postcss-loader',
               {
@@ -183,7 +183,9 @@ if (isDevelopment) {
     hot: true,
     liveReload: false,
     historyApiFallback: true,
-    static: resolve(__dirname, './assets'),
+    static: [
+      resolve(__dirname, './assets'),
+    ],
     overlay: {
       warnings: true,
       errors: true,

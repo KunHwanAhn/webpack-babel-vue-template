@@ -13,15 +13,15 @@
     "lint": "eslint --fix --ext .js,.vue src"
   },
   "dependencies": {
-    "core-js": "^3.6.4",
+    "core-js": "^3.8.1",
     "vue": "^2.6.11",
     "vue-router": "^3.4.9",
     "vuetify": "^2.3.21",
     "vuex": "^3.6.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.7",
-    "@babel/preset-env": "^7.8.7",
+    "@babel/core": "^7.12.10",
+    "@babel/preset-env": "^7.12.10",
     "autoprefixer": "^9.7.4",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.0.6",

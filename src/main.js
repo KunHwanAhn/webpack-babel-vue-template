@@ -1,8 +1,9 @@
 import Vue from 'vue';
+import '@/styles/index.scss';
+
 import store from './store';
 import router from './routes';
 import plugins from './plugins';
-import '@/styles/index.scss';
 
 import App from './App.vue';
 

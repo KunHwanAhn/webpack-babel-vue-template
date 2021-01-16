@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Webpack + Babel + Vue.js Template without VueCli",
   "main": "src/main.js",
-  "repository": "https://github.com/KunHwanAhn/webpack-babel-vue-template",
+  "repository": "git@github.com:KunHwanAhn/webpack-babel-vue-template.git",
   "author": "Conan Kunhwan Ahn <kunhwon@gmail.com>",
   "scripts": {
     "serve": "cross-env NODE_ENV=development webpack serve",

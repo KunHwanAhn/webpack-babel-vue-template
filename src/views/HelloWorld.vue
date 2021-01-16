@@ -8,7 +8,7 @@
     <div>Hello Vue!</div>
     <div>
       <img
-        src="/assets/google.png"
+        src="assets/images/google.png"
         alt="Google Logo"
       >
     </div>

@@ -1,15 +1,8 @@
 <template>
-  <div>
-    <RouterView />
-  </div>
+  <RouterView />
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      drawer: false,
-    };
-  },
 };
 </script>

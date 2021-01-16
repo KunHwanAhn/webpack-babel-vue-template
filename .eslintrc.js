@@ -17,8 +17,17 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
+  settings: {
+    'import/resolver': {
+      alias: {
+        map: [
+          ['@', './src'],
+        ],
+      },
+    },
+  },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'import/no-unresolved': 'off',
     'import/extensions': ['error', 'always', {
@@ -36,5 +45,6 @@ module.exports = {
         'e', // for e.returnvalue
       ],
     }],
+    'vue/no-boolean-default': 'error',
   },
 };

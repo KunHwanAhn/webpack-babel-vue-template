@@ -6,6 +6,12 @@
       </RouterLink>
     </div>
     <div>Hello Vue!</div>
+    <div>
+      <img
+        src="/assets/google.png"
+        alt="Google Logo"
+      >
+    </div>
   </div>
 </template>
 

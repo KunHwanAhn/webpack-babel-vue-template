@@ -1,24 +1,24 @@
-/* eslint-disable global-require */
-const webpack = require('webpack');
+const { resolve } = require('path');
+const { DefinePlugin, HotModuleReplacementPlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 
-const { resolve } = require('path');
+const MODE_PRODUCTION = 'production';
+const MODE_DEVELOPMENT = 'development';
 
-const isProduction = process.env.NODE_ENV === 'production';
-const isDevelopment = process.env.NODE_ENV === 'development';
+const isProduction = process.env.NODE_ENV === MODE_PRODUCTION;
 
-const webpackConfig = {
-  mode: 'development',
+const config = {
+  mode: MODE_DEVELOPMENT,
   target: ['web', 'es5'],
   entry: resolve(__dirname, './src/main.js'),
   output: {
@@ -44,7 +44,7 @@ const webpackConfig = {
     },
     minimizer: [
       new CssMinimizerPlugin(),
-      new TerserJSPlugin({
+      new TerserWebpackPlugin({
         terserOptions: {
           compress: {
             arrows: false,
@@ -73,10 +73,12 @@ const webpackConfig = {
     new VueLoaderPlugin(),
     new CaseSensitivePathsPlugin(),
     new ESLintPlugin(),
-    new webpack.DefinePlugin({
+    new DefinePlugin({
       'process.env': {
-        NODE_ENV: isProduction ? '"production"' : '"development"',
+        NODE_ENV: isProduction ? `"${MODE_PRODUCTION}"` : `"${MODE_DEVELOPMENT}"`,
       },
+      __VUE_OPTIONS_API__: true,
+      __VUE_PROD_DEVTOOLS__: false,
     }),
     new HtmlWebpackPlugin({
       template: resolve(__dirname, './public/index.html'),
@@ -87,9 +89,6 @@ const webpackConfig = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
-          extractCSS: isProduction,
-        },
       },
       {
         test: /\.m?jsx?$/,
@@ -112,71 +111,61 @@ const webpackConfig = {
       },
       {
         test: /\.s(c|a)ss$/,
-        oneOf: [
+        use: [
+          isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
           {
-            resourceQuery: /module/,
-            use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
-              {
-                loader: 'css-loader',
-                options: {
-                  modules: {
-                    localIdentName: '[name]_[local]_[contenthash:base64:8]',
-                  },
-                },
-              },
-              'postcss-loader',
-              'sass-loader',
-            ],
+            loader: 'css-loader',
+            options: {
+              url: false,
+            },
           },
+          'postcss-loader',
           {
-            test: /\.module\.\w+$/,
-            use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
-              {
-                loader: 'css-loader',
-                options: {
-                  modules: {
-                    localIdentName: '[name]_[local]_[contenthash:base64:8]',
-                  },
-                },
+            loader: 'sass-loader',
+            options: {
+              // eslint-disable-next-line global-require
+              implementation: require('sass'),
+              sassOptions: {
+                // eslint-disable-next-line global-require
+                fiber: require('fibers'),
               },
-              'postcss-loader',
-              'sass-loader',
-            ],
-          },
-          {
-            use: [
-              isProduction ? { loader: MiniCssExtractPlugin.loader } : 'style-loader',
-              'css-loader',
-              'postcss-loader',
-              {
-                loader: 'sass-loader',
-                options: {
-                  implementation: require('sass'),
-                  sassOptions: {
-                    fiber: require('fibers'),
-                  },
-                },
-              },
-            ],
+            },
           },
         ],
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[contenthash]',
-        },
       },
     ],
   },
 };
 
-if (isDevelopment) {
-  webpackConfig.devtool = 'source-map';
-  webpackConfig.devServer = {
+if (isProduction) {
+  config.mode = MODE_PRODUCTION;
+
+  config.plugins = [
+    ...config.plugins,
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'assets', to: 'assets' }],
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'styles/[name].css',
+      chunkFilename: 'styles/[name].css',
+      ignoreOrder: true,
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      generateStatsFile: true,
+    }),
+  ];
+} else {
+  config.devtool = 'source-map';
+
+  config.plugins = [
+    ...config.plugins,
+    new HotModuleReplacementPlugin({}),
+  ];
+
+  config.devServer = {
     compress: true,
     host: '0.0.0.0',
     port: 8080,
@@ -194,32 +183,6 @@ if (isDevelopment) {
       errors: true,
     },
   };
-
-  webpackConfig.plugins = [
-    ...webpackConfig.plugins,
-    new webpack.HotModuleReplacementPlugin({}),
-  ];
 }
 
-if (isProduction) {
-  webpackConfig.mode = 'production';
-
-  webpackConfig.plugins = [
-    ...webpackConfig.plugins,
-    new CopyWebpackPlugin({
-      patterns: [{ from: 'assets', to: 'assets' }],
-    }),
-    new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({
-      filename: 'styles/[name].css',
-      chunkFilename: 'styles/[name].css',
-      ignoreOrder: true,
-    }),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: false,
-    }),
-  ];
-}
-
-module.exports = webpackConfig;
+module.exports = config;

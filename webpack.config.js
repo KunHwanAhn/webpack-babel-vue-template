@@ -23,6 +23,7 @@ const config = {
   entry: resolve(__dirname, './src/main.js'),
   output: {
     path: resolve(__dirname, 'dist'),
+    publicPath: '/',
     filename: 'js/[name].js',
     chunkFilename: 'js/[name].js',
   },
